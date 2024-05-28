@@ -52,7 +52,6 @@ Add_Task() {
     read name
 
     n=$(ls $name| wc -l)
-    let n=$n+1
     mkdir "$name/Task$n" || exit
     cd "$name/Task$n"
     touch "Task$n.txt" || exit
@@ -79,7 +78,7 @@ Add_Task() {
     echo "_ What do you need to complete this task: "
     read attachments
     echo "- Attachments: $attachments" >> Task$n.txt
-
+    echo -e
     echo "_ Do you wish to add any sub-tasks (y/n): "
     read answer
 
