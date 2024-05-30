@@ -1,6 +1,5 @@
-- Title: Projet To-do list
-- Deadline: 14/06/2024
-- Added in: Thu May 30 07:02:14 PM EDT 2024
-- Status: On going 
-- Assignees: YS SF MH FZ
-- Attachments: laptop paper wifi
+- Title: 1
+- Deadline: 1
+- Added in: Thu May 30 07:37:29 PM EDT 2024
+- Assignees: 1
+- Attachments: 1

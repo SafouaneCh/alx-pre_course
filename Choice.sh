@@ -52,8 +52,9 @@ Add_Task() {
     echo "_ In which list does your Task exist : "
     read name
 
-    n=$(ls $name| wc -l)
+    n=$(ls $name| grep -c "^Task")
     let n=$n+1
+
     mkdir "$name/Task$n" || exit
     cd "$name/Task$n"
     touch "Task$n.txt" || exit
@@ -94,7 +95,7 @@ Add_Task() {
             echo "No sub-tasks added"
             ;;
         y|Y) 
-            Add_subTask "Task$n"
+		Add_subTask "Task$n"
             echo "SubTask added successfully"
             ;;
         *) 
@@ -114,8 +115,9 @@ Add_List() {
 Add_subTask() {
     local list="$1"
 
-    k=$(ls "$list" | wc -l)
+    k=$(ls "$list" | grep -c "^Sub_Task")
     let k=$k+1
+    cd "$list"
 
     touch "Sub_Task$k.txt"
 
@@ -132,8 +134,8 @@ Add_subTask() {
     read status
      
     case $status in
-            o|O) echo "- Status: On going " >> Sub_Task$K.txt;;
-            d|D) echo "- Status: Completed " >> Sub_Task$K.txt;;
+            o|O) echo "- Status: On going " >> Sub_Task$k.txt;;
+            d|D) echo "- Status: Completed " >> Sub_Task$k.txt;;
             *) echo "Incorect Input !!!!! " ;;
     esac 
 
