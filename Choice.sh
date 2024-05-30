@@ -30,6 +30,7 @@ Handle_Choice() {
 		         echo "New list added successfully!! ";;
 	   esac ;;
 	4) Show_Task ;;
+	6) Filter_By_Status ;;
         0) exit ;;
         *) echo "Invalid choice";;
     esac
