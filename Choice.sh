@@ -52,11 +52,10 @@ Add_Task() {
     read name
 
     n=$(ls $name| wc -l)
+    let n=$n+1
     mkdir "$name/Task$n" || exit
     cd "$name/Task$n"
     touch "Task$n.txt" || exit
-
-    
 
     echo "_ What's your task title: "
     read title
@@ -68,8 +67,15 @@ Add_Task() {
 
     date=$(date)
     echo "- Added in: $date" >> Task$n.txt
-
-    echo "- Status: ongoing" >> Task$n.txt
+    
+    echo "_ Is your Task still on going (o/O) or donr (d/D) ?"
+    read status
+     
+    case $status in
+	    o|O) echo "- Status: On going " >> Task$n.txt;;
+	    d|D) echo "- Status: Completed " >> Task$n.txt;;
+	    *) echo "Incorect Input !!!!! " ;;
+    esac
 
     echo "_ Who works on this task: "
     read assignees
@@ -109,8 +115,8 @@ Add_subTask() {
     local list="$1"
 
     k=$(ls "$list" | wc -l)
+    let k=$k+1
 
-    cd "$list"
     touch "Sub_Task$k.txt"
 
     read -p "What's your task title: " title
@@ -121,6 +127,15 @@ Add_subTask() {
 
     date=$(date)
     echo "- Added in: $date" >> "Sub_Task$k.txt"
+
+    echo "_ Is your Task still on going (o/O) or donr (d/D) ?"
+    read status
+     
+    case $status in
+            o|O) echo "- Status: On going " >> Sub_Task$K.txt;;
+            d|D) echo "- Status: Completed " >> Sub_Task$K.txt;;
+            *) echo "Incorect Input !!!!! " ;;
+    esac 
 
     read -p "Who works on this task: " assignees
     echo "- Assignees: $assignees" >> "Sub_Task$k.txt"
