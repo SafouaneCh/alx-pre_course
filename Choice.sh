@@ -30,6 +30,7 @@ Handle_Choice() {
 		         echo "New list added successfully!! ";;
 	   esac ;;
 	4) Show_Task ;;
+	6) Filter_By_Status ;;
         0) exit ;;
         *) echo "Invalid choice";;
     esac
@@ -104,9 +105,8 @@ Add_Task() {
 
 Add_List() {
 	n=$(ls  | wc -l)
-    let n=$n-1
-    mkdir "List$n" || exit
-    echo "List$n created successfully"
+	mkdir "List$n" || exit
+	echo "List$n created successfully"
 }
 
 
@@ -173,6 +173,13 @@ Show_Task(){
     done
 }
 
+Filter_By_status(){
+	echo "_Enter the status to filter by (ongoing, completed): "
+	read status
+
+	echo "Tasks with status '$satus': "
+	find . -type f -name "*.txt" -exec grep -l "- Status: $status" {} \; -exec grep "- Type: " {}\;
+}
 
 # Keep showing the menu until the user exits
 while true; do
