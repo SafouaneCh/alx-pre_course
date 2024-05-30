@@ -4,16 +4,15 @@
 Show_Menu() {
     echo "To-Do List Menu:
           your choices are: 
-        1. View: View the To-Do List that you wish to see
-        2.1. Add1 : Add a Task to an existing list 
-         .2. Add2 : Add a new list and new Tasks
-        3. Remove: Remove Task
-        4. Show-Task: Show a specific Task
-        5. Edit : Edit a specific Task
-        6. Filter: Filter by status
-        7. Priority: Prioritize Tasks
-        9. Alarm: Activate the alarm option
-        10. Press 0 : Exit"
+        1. View the To-Do List that you wish to see
+        2. Add a Task / A list
+        3. Remove Task
+        4. Show a specific Task
+        5. Edit a specific Task
+        6. Filter by status
+        7. Prioritize Tasks
+        9. Activate the alarm option
+        0. Exit"
 
     read -p "Your choice: " choice
     Handle_Choice "$choice"
@@ -21,10 +20,16 @@ Show_Menu() {
 
 Handle_Choice() {
     case $1 in
-        View) Show_List ;;
-        Add1) Add_Task ;;
-        Add2) Add_List ;;
-	Show-Task) Show_Task ;;
+        1) Show_List ;;
+        2) echo " do you wish to add a 1. task or 2. a whole new list ? "
+	   read add
+           case $add in
+		   1) Add_Task 
+		         echo "Task added successfully !! ";;
+		   2) Add_List 
+		         echo "New list added successfully!! ";;
+	   esac ;;
+	4) Show_Task ;;
         0) exit ;;
         *) echo "Invalid choice";;
     esac
@@ -47,7 +52,6 @@ Add_Task() {
     read name
 
     n=$(ls $name| wc -l)
-    let n=$n+1
     mkdir "$name/Task$n" || exit
     cd "$name/Task$n"
     touch "Task$n.txt" || exit
@@ -74,7 +78,7 @@ Add_Task() {
     echo "_ What do you need to complete this task: "
     read attachments
     echo "- Attachments: $attachments" >> Task$n.txt
-
+    echo -e
     echo "_ Do you wish to add any sub-tasks (y/n): "
     read answer
 
@@ -94,9 +98,8 @@ Add_Task() {
 
 Add_List() {
 	n=$(ls  | wc -l)
-    let n=$n-1
-    mkdir "List$n" || exit
-    echo "List$n created successfully"
+	mkdir "List$n" || exit
+	echo "List$n created successfully"
 }
 
 
@@ -154,6 +157,13 @@ Show_Task(){
     done
 }
 
+Filter_By_status(){
+	echo "_Enter the status to filter by (ongoing, completed): "
+	read status
+
+	echo "Tasks with status '$satus': "
+	find . -type f -name "*.txt" -exec grep -l "- Status: $status" {} \; -exec grep "- Type: " {}\;
+}
 
 # Keep showing the menu until the user exits
 while true; do
