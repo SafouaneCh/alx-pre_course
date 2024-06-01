@@ -2,16 +2,17 @@
 
 
 Show_Menu() {
+
     echo "To-Do List Menu:
           your choices are: 
-        1. View the To-Do List that you wish to see
-        2. Add a Task / A list
+        1. View To-do list
+        2. Add a Task 
         3. Remove Task
         4. Show a specific Task
         5. Edit a specific Task
         6. Filter by status
-        7. Prioritize Tasks
-        9. Activate the alarm option
+	7. Filter by priority
+        8. Activate the alarm option
         0. Exit"
 
     read -p "Your choice: " choice
@@ -19,43 +20,31 @@ Show_Menu() {
 }
 
 Handle_Choice() {
+
     case $1 in
         1) Show_List ;;
-        2) echo " do you wish to add a 1. task or 2. a whole new list ? "
-	   read add
-           case $add in
-		   1) Add_Task 
-		         echo "Task added successfully !! ";;
-		   2) Add_List 
-		         echo "New list added successfully!! ";;
-	   esac ;;
+        2) Add_Task ;;
 	4) Show_Task ;;
 	6) Filter_By_Status ;;
+	7) Filter_By_Priority;;
         0) exit ;;
         *) echo "Invalid choice";;
     esac
 }
 
 Show_List() {
-    cd "to_do_list "
-    echo "Enter the name of the list you wish to view: "
-    read name 
 
-    if [ -d "$name" ]; then
-        ls "$name"
-    else 
-        echo "There's no such list in your machine"
-    fi
+   ls 
 }
 
 Add_Task() {
-    echo "_ In which list does your Task exist : "
-    read name
 
-    n=$(ls $name| wc -l)
-    mkdir "$name/Task$n" || exit
-
+    n=$(ls | wc -l)
+    let n=$n-1
+    mkdir "Task$n" || exit
+    cd "Task$n"
     
+    touch Task$n.txt    
 
     echo "_ What's your task title: "
     read title
@@ -99,44 +88,30 @@ Add_Task() {
             echo "Incorrect Input"
             ;;
     esac
+    cd ..
+
 }
+
+
 Remove_Task(){
-	echo "_In which list does your task exist ?"
-	read list
+
 	echo "_Which task do you want to remove ?"
 	read task
-	if [ -d "$list/$task" ];then
-		rm -r "$list/$task"
+	if [ -d "$task" ];then
+		rm -r "$task"
 	else 
-		echo "_No such task in the list '$list'"
+		echo "_No such task in the list "
 
 	fi
 }
 
-Add_List() {
-	n=$(ls  | wc -l)
-	mkdir "List$n" || exit
-	echo "List$n created successfully"
-}
-Remove_List(){
-	echo "_Which list do you want to remove ? "
-	read list
-	if [ -d "$list" ]; then
-        rm -r "$list"
-        echo "List '$list' removed"
-    else
-        echo "_No such list found"
-    fi
-
-}
-
 
 Add_subTask() {
+
     local list="$1"
 
-    k=$(ls "$list" | wc -l)
+    k=$(ls  | wc -l)
 
-    cd "$list"
     touch "Sub_Task$k.txt"
 
     read -p "What's your task title: " title
@@ -158,13 +133,14 @@ Add_subTask() {
 
     case $answer in
         n|N) echo "No other sub-tasks added" ;;
-        y|Y) Add_subTask "$list" ;;
+        y|Y)   Add_subTask "$list" ;;
         *) echo "Incorrect Input" ;;
     esac
+    cd..
 }
+
+
 Remove_Subtask(){
-    echo "_In which list does your Task exist : "
-    read list
 
     echo "_Which task contains the subtask : "
     read task
@@ -172,35 +148,36 @@ Remove_Subtask(){
     echo "_ Which subtask do you want to remove : "
     read subtask
 
-    if [ -f "$list/$task/$subtask" ]; then
-        rm "$list/$task/$subtask"
-        echo "Subtask '$subtask' removed from task '$task' in list '$list'"
+    if [ -f "$task/$subtask" ]; then
+        rm "$task/$subtask"
+        echo "Subtask '$subtask' removed from task '$task' "
     else
-        echo "No such subtask in task '$task' in list '$list'"
+        echo "No such subtask in task '$task' "
     fi
 
 }
 
+
 Show_Task(){
-	
-	echo " In what list is your task : "
-	read list
-        echo "Which task exactly : "
+  
+        echo -e	
+        echo "Which task do wish to view : "
 	read Task
-        for j in $(ls "$list/$Task" ); do
+	for j in $( ls "$Task" )  ; do
         if [[ "$j" == Task* ]]; then
             echo "The main task is : "
             echo -e
-            cat "$list/$Task/$j"
+            cat "$Task/$j"
             echo -e
         elif [[ "$j" == Sub* ]]; then
             echo "The sub tasks are : "
             echo -e
-            cat "$list/$Task/$j"
+            cat "$Task/$j"
             echo -e
         fi
     done
 }
+
 
 Filter_By_status(){
 	echo "_Enter the status to filter by (ongoing, completed): "
@@ -210,6 +187,7 @@ Filter_By_status(){
 	find . -type f -name "*.txt" -exec grep -l "- Status: $status" {} \; -exec grep "- Type: " {}\;
 }
 
+
 Filter_By_Priority(){
 	echo "_Enter the priority to filter by (high, medium, low) :"
 	read priority 
@@ -218,6 +196,7 @@ Filter_By_Priority(){
 	find . -type f -name "*.txt" -exec grep -l "- Priority: $priority"{} \;
 	#-l affiche juste le nom des fichiers(tasks) non pas les details du task 
 }
+
 
 # Keep showing the menu until the user exits
 while true; do
