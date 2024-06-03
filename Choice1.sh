@@ -2,7 +2,8 @@
 
 
 Show_Menu() {
-    figlet -f slant -c "TO DO LIST " | lolcat && figlet -f digital -c "To_Do_List Menu " | lolcat
+    figlet -f slant -c "TO DO LIST " | lolcat 
+    figlet -f digital -c "To_Do_List Menu " | lolcat
 
     echo "
         1. View To-do list
@@ -14,8 +15,9 @@ Show_Menu() {
 	7. Filter by priority
         8. Activate the alarm option
         0. Exit"
-
-    read -p "Your choice: " choice
+    
+    figlet -f digital "Your choice : " | lolcat 
+    read choice
     Handle_Choice "$choice"
 }
 
