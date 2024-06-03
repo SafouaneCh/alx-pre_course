@@ -2,9 +2,9 @@
 
 
 Show_Menu() {
+    figlet -f slant -c "TO DO LIST " | lolcat && figlet -f digital -c "To_Do_List Menu " | lolcat
 
-    echo "To-Do List Menu:
-          your choices are: 
+    echo "
         1. View To-do list
         2. Add a Task 
         3. Remove Task
