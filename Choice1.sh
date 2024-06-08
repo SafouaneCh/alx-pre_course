@@ -19,6 +19,7 @@ Show_Menu() {
         8. Activate the alarm option
 	9. Export tasks
 	10. Import tasks
+	11. Show history of the list
         0. Exit"
     
     figlet -f digital "Your choice : " | lolcat 
@@ -32,10 +33,12 @@ Handle_Choice() {
         1) Show_List ;;
         2) Add_Task ;;
 	4) Show_Task ;;
+	5) Edit_Task ;;
 	6) Filter_By_Status ;;
 	7) Filter_By_Priority;;
 	9) Export_Tasks;;
 	10) Import_Tasks;;
+	11) Show_History ;;
         0) exit ;;
         *) echo "Invalid choice";;
     esac
@@ -230,8 +233,56 @@ Import_Tasks(){
 	else
 		echo "Fichier d'archive $archive_name non trouvé"
 	fi
+
 }
 
+Edit_Task() {
+    echo "Which task do you want to edit?"
+    read task
+    if [ -d "$task" ]; then
+        cd "$task"
+        if [ -f "${task}.txt" ]; then
+            echo "Editing Task: $task"
+            nano "${task}.txt"
+            echo "Task edited successfully !!"
+            echo "Task edited: $task at $(date)" >> "../modification_history.txt"
+        else
+            echo "No such task"
+        fi
+        cd ..
+    else
+        echo "No such task"
+    fi
+}
+
+
+Edit_Subtask() {
+    echo "Which task contains the subtask you want to edit?"
+    read task
+    if [ -d "$task" ]; then
+        echo "Which subtask do you want to edit?"
+        read subtask
+        if [ -f "$task/$subtask" ]; then
+            cd "$task"
+            nano "$subtask"
+            echo "Subtask edited successfully !!"
+            echo "Subtask edited: $subtask in task: $task at $(date)" >> "../modification_history.txt"
+            cd ..
+        else
+            echo "No such subtask"
+        fi
+    else
+        echo "No such task"
+    fi
+}
+
+Show_History() {
+    if [ -f "modification_history.txt" ]; then
+        cat "modification_history.txt"
+    else
+        echo "No modification history available"
+    fi
+}
 # Keep showing the menu until the user exits
 while true; do
     
