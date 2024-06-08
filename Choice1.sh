@@ -1,5 +1,8 @@
 #!/bin/bash
 
+TODO_DIR="$HOME/.todo"
+
+mkdir -p "$TODO_DIR"
 
 Show_Menu() {
 
@@ -13,6 +16,8 @@ Show_Menu() {
         6. Filter by status
 	7. Filter by priority
         8. Activate the alarm option
+	9. Export tasks
+	10. Import tasks
         0. Exit"
 
     read -p "Your choice: " choice
@@ -27,19 +32,22 @@ Handle_Choice() {
 	4) Show_Task ;;
 	6) Filter_By_Status ;;
 	7) Filter_By_Priority;;
+	9) Export_Tasks;;
+	10) Import_Tasks;;
         0) exit ;;
         *) echo "Invalid choice";;
     esac
 }
 
 Show_List() {
-
-   ls 
+	for task in "$TODO_DIR"/*; do
+		echo "Task: $(basename "$task")"
+	done
 }
 
 Add_Task() {
 
-    n=$(ls | wc -l)
+    n=$(ls "$TODO_DIR" | wc -l)
     let n=$n-1
     mkdir "Task$n" || exit
     cd "Task$n"
@@ -97,7 +105,7 @@ Remove_Task(){
 
 	echo "_Which task do you want to remove ?"
 	read task
-	if [ -d "$task" ];then
+	if [ -d "$task" ]; then
 		rm -r "$task"
 	else 
 		echo "_No such task in the list "
@@ -197,6 +205,30 @@ Filter_By_Priority(){
 	#-l affiche juste le nom des fichiers(tasks) non pas les details du task 
 }
 
+Export_Tasks(){
+	echo "Entrez le nom de l'archive (ou appuyer sur Entrée pour utiliser le nom par défaut):"
+	read user_archive_name
+
+	if [ -z "$user_archive_name" ]; then
+		archive_name="tasks_backup_$(date +%Y%m%d_%H%M%S).tar.gz"
+	else
+		archive_name="${user_archive_name}.tar.gz"
+	fi
+	tar -cvf "$archive_name" Task*
+	echo "toutes les tâches ont été exportées vers $archive_name"
+}
+
+Import_Tasks(){
+	echo "Entrez le nom de l'archive à partir de laquelle importer les tâches:"
+	read archive_name
+
+	if [ -f "$archive_name" ]; then
+		tar -xvf "$archive_name"
+		echo "Les tâches ont été importées à partir de $archive_name"
+	else
+		echo "Fichier d'archive $archive_name non trouvé"
+	fi
+}
 
 # Keep showing the menu until the user exits
 while true; do
