@@ -256,14 +256,19 @@ Alarm_Task() {
     if [ -z "$task" ]; then
         read -p "Which task do you want to set an alarm for? " task
     fi
-    task_path="$TODO_DIR/$task/Task$task.txt"
-    if [ -f "$task_path" ]; then
-        read -p "Enter the alarm time (e.g., 5 minutes): " alarm_time
-        sleep "$alarm_time" && notify-send "Reminder: Task $task is due now!"
-        echo "Alarm set for task '$task' at $alarm_time from now."
-    else
+
+    task_path="$TODO_DIR/$task/Task${task#Task}.txt"
+    
+    if [ ! -f "$task_path" ]; then
         echo "No such task"
+        return 1
     fi
+    
+    read -p "Enter the alarm time (e.g., 5m for 5 minutes): " alarm_time
+
+    ( sleep "$alarm_time" && notify-send "Reminder: Task $task is due now!" ) &
+    echo "Alarm set for task '$task' at $alarm_time from now."
+
 }
 
 # Main loop
