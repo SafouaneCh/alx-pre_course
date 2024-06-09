@@ -1,9 +1,0 @@
-Package: to-do-list
-Version: 1.0
-Section: utils
-Priority: optional
-Architecture: all
-Essential: no
-Maintainer: Your Name <your.email@example.com>
-Description: A simple shell script for managing a to-do list.
- This tool allows users to add, remove, and manage tasks in a to-do list format.
